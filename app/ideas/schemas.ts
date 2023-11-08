@@ -4,12 +4,13 @@ export const createIdeaSchema = z.object({
   idea: z.string().min(2, {
     message: 'Idea must be at least 2 characters',
   }),
+  preview: z.string().optional(),
 });
 
 export type CreateIdeaFormValues = z.infer<typeof createIdeaSchema>;
 
 export const deleteIdeaSchema = z.object({
-  id: z.coerce.number(),
+  id: z.string().min(1),
   idea: z.string().min(1),
 });
 

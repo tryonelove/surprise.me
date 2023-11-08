@@ -51,7 +51,10 @@ export default function CreateIdeaForm() {
 
   useEffect(() => {
     if (state.type !== 'none') {
-      toast({ title: state.message });
+      toast({
+        title: state.message,
+        variant: state.type === 'failure' ? 'destructive' : 'default',
+      });
     }
   }, [state, toast]);
 
@@ -66,12 +69,24 @@ export default function CreateIdeaForm() {
     <Form {...form}>
       <form className='flex flex-col gap-3' action={action}>
         <FormField
+          name='preview'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Preview</FormLabel>
+              <FormControl>
+                <Input placeholder='Link to the preview' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
           name='idea'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Idea</FormLabel>
               <FormControl>
-                <Input placeholder='Your awesome idea...' {...field} />
+                <Input placeholder='Enter your idea' {...field} />
               </FormControl>
               <FormDescription>
                 Here you can enter your craziest ideas

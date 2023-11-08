@@ -11,7 +11,8 @@ datasource db {
 }
 
 model Gift {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   description String
   createdAt   DateTime @default(now())
+  imageUrl    String?
 }

@@ -1,20 +1,20 @@
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { prisma } from '@/lib/prisma';
-import CreateIdeaForm from './CreateIdeaForm';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import DeleteIdeaForm from './DeleteIdeaForm';
+} from "@/components/ui/card";
+import { prisma } from "@/lib/prisma";
+import CreateIdeaForm from "./CreateIdeaForm";
+import DeleteIdeaForm from "./DeleteIdeaForm";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from '@/components/ui/page-header';
+} from "@/components/ui/page-header";
+import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 
 async function getGiftsAsync() {
   const gifts = await prisma.gift.findMany();
@@ -26,32 +26,50 @@ export default async function Ideas() {
   const gifts = await getGiftsAsync();
 
   return (
-    <main className='flex min-h-screen flex-col justify-between p-24'>
+    <main className="flex min-h-screen flex-col gap-3 p-24">
       <PageHeader>
         <PageHeaderHeading>Your gift ideas</PageHeaderHeading>
         <PageHeaderDescription>Share your ideas here!</PageHeaderDescription>
       </PageHeader>
-      <Card className='min-w-[460px]'>
-        <CardHeader>
-          <CardTitle>Your gift ideas</CardTitle>
-          <CardDescription>Share your ideas here!</CardDescription>
-        </CardHeader>
-        <CardContent className='flex flex-col gap-2'>
-          <CreateIdeaForm />
-          <ScrollArea className='h-96'>
-            <div className='flex flex-col gap-1 pr-3 justify-center'>
-              {gifts.map((g, i) => (
-                <div key={g.id} className='flex justify-between items-center'>
-                  <p>
-                    {i + 1}. {g.description}
-                  </p>
-                  <DeleteIdeaForm ideaId={g.id} idea={g.description} />
+      <div className="flex flex-wrap gap-4">
+        <Card className="w-64">
+          <CardHeader>
+            <CardTitle>Create a new idea</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CreateIdeaForm />
+          </CardContent>
+        </Card>
+        {gifts.map((g, i) => (
+          <Card key={g.id} className="relative w-64">
+            <CardHeader>
+              {!!g.imageUrl ? (
+                <div className="relative h-[207px] w-[207px]">
+                  <Image
+                    className="rounded-sm object-cover"
+                    src={g.imageUrl}
+                    alt={`${g.description} preview`}
+                    fill
+                  />
                 </div>
-              ))}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
+              ) : (
+                <Skeleton className="h-[207px] w-[207px] rounded-sm" />
+              )}
+            </CardHeader>
+            <CardContent>
+              <p className="truncate" title={g.description}>
+                {i + 1}. {g.description}
+              </p>
+              <p>Created: {g.createdAt.toLocaleDateString()}</p>
+              <DeleteIdeaForm
+                ideaId={g.id}
+                idea={g.description}
+                className="absolute right-4 top-4"
+              />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </main>
   );
 }
