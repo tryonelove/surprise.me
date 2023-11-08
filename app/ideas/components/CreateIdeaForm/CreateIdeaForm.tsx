@@ -1,7 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { useFormState, useFormStatus } from 'react-dom';
-import { ActionResult, createIdea } from './actions';
 import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
@@ -17,7 +16,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
+import { CreateIdeaFormField } from './CreateIdeaFormField';
+import { createIdea } from './actions';
 import { CreateIdeaFormValues, createIdeaSchema } from './schemas';
+import { ActionResult } from '@/lib/types';
 
 const initialState: ActionResult = {
   type: 'none',
@@ -46,14 +48,14 @@ export default function CreateIdeaForm() {
 
   const [state, formAction] = useFormState<ActionResult, FormData>(
     createIdea,
-    initialState
+    initialState,
   );
 
   useEffect(() => {
     if (state.type !== 'none') {
       toast({
         title: state.message,
-        variant: state.type === 'failure' ? 'destructive' : 'default',
+        variant: state.type === 'failure' ? 'destructive' : 'success',
       });
     }
   }, [state, toast]);
@@ -69,19 +71,23 @@ export default function CreateIdeaForm() {
     <Form {...form}>
       <form className='flex flex-col gap-3' action={action}>
         <FormField
-          name='preview'
+          name={CreateIdeaFormField.Preview}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Preview</FormLabel>
               <FormControl>
-                <Input placeholder='Link to the preview' {...field} />
+                <Input
+                  placeholder='Link to the preview'
+                  type='file'
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
-          name='idea'
+          name={CreateIdeaFormField.Idea}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Idea</FormLabel>
