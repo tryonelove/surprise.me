@@ -6,7 +6,7 @@ import {
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { CreateIdeaFormField } from './CreateIdeaFormField';
-import { createIdeaSchema } from './schemas';
+import { createIdeaServerSchema } from './schemas';
 import { ActionResult } from '@/lib/types';
 
 async function uploadFileAsync(preview: File | undefined) {
@@ -36,12 +36,16 @@ export async function createIdea(
   _: unknown,
   formData: FormData,
 ): Promise<ActionResult> {
-  const values = createIdeaSchema.parse({
+  console.log(formData);
+
+  const values = createIdeaServerSchema.parse({
     idea: formData.get(CreateIdeaFormField.Idea),
     preview: formData.get(CreateIdeaFormField.Preview),
   });
 
   const image = await uploadFileAsync(values.preview as File | undefined);
+
+  console.log(`Creating image: ${image}`);
 
   try {
     console.log(`Adding gift to database: ${values.idea}`);

@@ -26,7 +26,7 @@ export default async function Ideas() {
         <PageHeaderDescription>Share your ideas here!</PageHeaderDescription>
       </PageHeader>
       <div className='flex flex-wrap gap-4'>
-        <Card className='h-[354px] w-64'>
+        <Card className='min-h-[354px] w-64'>
           <CardHeader>
             <CardTitle>Create a new idea</CardTitle>
           </CardHeader>
@@ -37,8 +37,8 @@ export default async function Ideas() {
         {gifts.map((g, i) => (
           <Card key={g.id} className='relative w-64'>
             <CardHeader>
-              {!!g.imageUrl ? (
-                <div className='relative h-[207px] w-[207px]'>
+              <div className='relative h-[207px] w-[207px] bg-gray-400'>
+                {!!g.imageUrl && (
                   <Image
                     className='rounded-sm object-cover'
                     src={g.imageUrl}
@@ -47,10 +47,8 @@ export default async function Ideas() {
                     blurDataURL={g.imageUrl}
                     fill
                   />
-                </div>
-              ) : (
-                <Skeleton className='h-[207px] w-[207px] rounded-sm' />
-              )}
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               <p className='truncate' title={g.description}>
@@ -58,6 +56,7 @@ export default async function Ideas() {
               </p>
               <p>Created: {g.createdAt.toLocaleDateString()}</p>
               <DeleteIdeaForm
+                key={g.id}
                 ideaId={g.id}
                 idea={g.description}
                 className='absolute right-4 top-4'

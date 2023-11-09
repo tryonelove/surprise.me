@@ -18,7 +18,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { CreateIdeaFormField } from './CreateIdeaFormField';
 import { createIdea } from './actions';
-import { CreateIdeaFormValues, createIdeaSchema } from './schemas';
+import { CreateIdeaFormValues, createIdeaClientSchema } from './schemas';
 import { ActionResult } from '@/lib/types';
 
 const initialState: ActionResult = {
@@ -40,7 +40,7 @@ export default function CreateIdeaForm() {
   const { toast } = useToast();
 
   const form = useForm<CreateIdeaFormValues>({
-    resolver: zodResolver(createIdeaSchema),
+    resolver: zodResolver(createIdeaClientSchema),
     defaultValues: {
       idea: '',
     },
@@ -72,14 +72,16 @@ export default function CreateIdeaForm() {
       <form className='flex flex-col gap-3' action={action}>
         <FormField
           name={CreateIdeaFormField.Preview}
-          render={({ field }) => (
+          render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>Preview</FormLabel>
               <FormControl>
                 <Input
+                  {...fieldProps}
+                  onChange={(event) => onChange(event.target.files)}
+                  accept='image'
                   placeholder='Link to the preview'
                   type='file'
-                  {...field}
                 />
               </FormControl>
               <FormMessage />
