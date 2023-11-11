@@ -1,14 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { prisma } from '@/lib/prisma';
-import CreateIdeaForm from './components/CreateIdeaForm/CreateIdeaForm';
-import DeleteIdeaForm from './components/DeleteIdeaForm';
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from '@/components/ui/page-header';
-import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
+import { CreateIdeaForm } from '@/components/create-idea';
+import { DeleteIdeaForm } from '@/components/delete-idea';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Gift ideas',
+};
 
 async function getGiftsAsync() {
   const gifts = await prisma.gift.findMany();

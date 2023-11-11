@@ -36,7 +36,7 @@ function SubmitButton() {
   );
 }
 
-export default function CreateIdeaForm() {
+export function CreateIdeaForm() {
   const { toast } = useToast();
 
   const form = useForm<CreateIdeaFormValues>({

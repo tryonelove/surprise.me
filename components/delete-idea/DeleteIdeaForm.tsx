@@ -33,7 +33,7 @@ interface DeleteIdeaFormProps {
   idea: Gift['description'];
 }
 
-export default function DeleteIdeaForm({
+export function DeleteIdeaForm({
   className,
   ideaId,
   idea,

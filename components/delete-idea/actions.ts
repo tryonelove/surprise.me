@@ -3,14 +3,16 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { deleteIdeaSchema } from './schemas';
 import { ActionResult } from '@/lib/types';
+import { Delete } from 'lucide-react';
+import { DeleteIdeaFormField } from './DeleteIdeaFormField';
 
 export async function deleteIdea(
   _: unknown,
   formData: FormData,
 ): Promise<ActionResult> {
   const data = deleteIdeaSchema.parse({
-    id: formData.get('id'),
-    idea: formData.get('idea'),
+    id: formData.get(DeleteIdeaFormField.Id),
+    idea: formData.get(DeleteIdeaFormField.Idea),
   });
 
   try {
