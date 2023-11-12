@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CreateIdeaFormField } from './CreateIdeaFormField';
+import { CreateWishFormField } from './CreateWishFormField';
 
 const validExtensions = ['jpg', 'jpeg', 'png'];
 
@@ -8,12 +8,13 @@ const MAX_FILE_SIZE_MB = 5;
 const toMb = (fileSizeInBytes: number): number =>
   Number((fileSizeInBytes / 1024 / 1024).toFixed(4));
 
-export const createIdeaServerSchema = z.object({
-  [CreateIdeaFormField.Idea]: z.string().min(2, {
-    message: 'Idea must be at least 2 characters',
+export const createWishServerSchema = z.object({
+  [CreateWishFormField.Wish]: z.string().min(2, {
+    message: 'Wish must be at least 2 characters',
   }),
-  [CreateIdeaFormField.Preview]: z
+  [CreateWishFormField.Preview]: z
     .unknown()
+    .optional()
     .transform((value) => {
       return value as File | null | undefined;
     })
@@ -43,16 +44,16 @@ export const createIdeaServerSchema = z.object({
     ),
 });
 
-export const createIdeaClientSchema = z.object({
-  [CreateIdeaFormField.Idea]: z.string().min(2, {
-    message: 'Idea must be at least 2 characters',
+export const createWishClientSchema = z.object({
+  [CreateWishFormField.Wish]: z.string().min(2, {
+    message: 'Wish must be at least 2 characters',
   }),
-  [CreateIdeaFormField.Preview]: z
+  [CreateWishFormField.Preview]: z
     .unknown()
     .transform((value) => {
       return value as FileList | null | undefined;
     })
-    .transform(value => value?.item(0))
+    .transform((value) => value?.item(0))
     .refine(
       (file) => {
         if (!file) {
@@ -77,6 +78,6 @@ export const createIdeaClientSchema = z.object({
         message: `File size must be less than ${MAX_FILE_SIZE_MB}MB`,
       },
     ),
-})
+});
 
-export type CreateIdeaFormValues = z.infer<typeof createIdeaServerSchema>;
+export type CreateWishFormValues = z.infer<typeof createWishServerSchema>;

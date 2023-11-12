@@ -1,0 +1,1 @@
+export { DeleteWishForm } from './DeleteWishForm';

@@ -1,0 +1,1 @@
+export { CreateWishForm } from './CreateWishForm';

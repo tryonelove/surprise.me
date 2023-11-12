@@ -16,14 +16,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-import { CreateIdeaFormField } from './CreateIdeaFormField';
-import { createIdea } from './actions';
-import { CreateIdeaFormValues, createIdeaClientSchema } from './schemas';
-import { ActionResult } from '@/lib/types';
-
-const initialState: ActionResult = {
-  type: 'none',
-};
+import { CreateWishFormField } from './CreateWishFormField';
+import { createWish } from './actions';
+import { CreateWishFormValues, createWishClientSchema } from './schemas';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -36,23 +31,21 @@ function SubmitButton() {
   );
 }
 
-export function CreateIdeaForm() {
+export function CreateWishForm() {
   const { toast } = useToast();
 
-  const form = useForm<CreateIdeaFormValues>({
-    resolver: zodResolver(createIdeaClientSchema),
+  const form = useForm<CreateWishFormValues>({
+    resolver: zodResolver(createWishClientSchema),
     defaultValues: {
-      idea: '',
+      wish: '',
+      preview: null,
     },
   });
 
-  const [state, formAction] = useFormState<ActionResult, FormData>(
-    createIdea,
-    initialState,
-  );
+  const [state, formAction] = useFormState(createWish, undefined);
 
   useEffect(() => {
-    if (state.type !== 'none') {
+    if (state && state.type !== 'none') {
       toast({
         title: state.message,
         variant: state.type === 'failure' ? 'destructive' : 'success',
@@ -71,7 +64,7 @@ export function CreateIdeaForm() {
     <Form {...form}>
       <form className='flex flex-col gap-3' action={action}>
         <FormField
-          name={CreateIdeaFormField.Preview}
+          name={CreateWishFormField.Preview}
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>Preview</FormLabel>
@@ -89,15 +82,15 @@ export function CreateIdeaForm() {
           )}
         />
         <FormField
-          name={CreateIdeaFormField.Idea}
+          name={CreateWishFormField.Wish}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Idea</FormLabel>
+              <FormLabel>Wish</FormLabel>
               <FormControl>
-                <Input placeholder='Enter your idea' {...field} />
+                <Input placeholder='Enter your wish' {...field} />
               </FormControl>
               <FormDescription>
-                Here you can enter your craziest ideas
+                Here you can enter your craziest wishes
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -5,9 +5,9 @@ import {
 } from '@/lib/google-cloud';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import { CreateIdeaFormField } from './CreateIdeaFormField';
-import { createIdeaServerSchema } from './schemas';
-import { ActionResult } from '@/lib/types';
+import { CreateWishFormField } from './CreateWishFormField';
+import { createWishServerSchema } from './schemas';
+import { ActionResult, MessageActionResult } from '@/lib/types';
 
 async function uploadFileAsync(preview: File | undefined) {
   if (!preview) {
@@ -32,45 +32,43 @@ async function uploadFileAsync(preview: File | undefined) {
   }
 }
 
-export async function createIdea(
+export async function createWish(
   _: unknown,
   formData: FormData,
-): Promise<ActionResult> {
-  console.log(formData);
+): Promise<MessageActionResult> {
+  console.log('Creating wish');
 
-  const values = createIdeaServerSchema.parse({
-    idea: formData.get(CreateIdeaFormField.Idea),
-    preview: formData.get(CreateIdeaFormField.Preview),
+  const values = createWishServerSchema.parse({
+    idea: formData.get(CreateWishFormField.Wish),
+    preview: formData.get(CreateWishFormField.Preview),
   });
 
   const image = await uploadFileAsync(values.preview as File | undefined);
 
-  console.log(`Creating image: ${image}`);
-
   try {
-    console.log(`Adding gift to database: ${values.idea}`);
+    console.log(`Adding wish to database: ${values.wish}`);
 
-    await prisma.gift.create({
+    await prisma.wish.create({
       data: {
-        description: values.idea,
+        description: values.wish,
         imageUrl: image?.publicUrl(),
       },
     });
 
-    console.log(`Added gift to database: ${values.idea}`);
+    console.log(`Added wish to database: ${values.wish}`);
 
-    revalidatePath('/ideas');
+    revalidatePath('/wishlist');
 
     return {
       type: 'success',
-      message: `Added gift ${values.idea}`,
+      message: `Added wish ${values.wish}`,
     };
   } catch (e) {
     console.log(e);
 
     return {
       type: 'failure',
-      message: `Failed to create gift: ${e}`,
+      message: `Failed to create wish: ${e}`,
     };
   }
 }

@@ -6,22 +6,22 @@ import {
   PageHeaderHeading,
 } from '@/components/ui/page-header';
 import Image from 'next/image';
-import { CreateIdeaForm } from '@/components/create-idea';
-import { DeleteIdeaForm } from '@/components/delete-idea';
+import { CreateWishForm } from '@/components/create-wish';
+import { DeleteWishForm } from '@/components/delete-wish';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Gift ideas',
+  title: 'Wishlist',
 };
 
-async function getGiftsAsync() {
-  const gifts = await prisma.gift.findMany();
+async function getWishesAsync() {
+  const wishes = await prisma.wish.findMany();
 
-  return gifts;
+  return wishes;
 }
 
-export default async function Ideas() {
-  const gifts = await getGiftsAsync();
+export default async function Wishlist() {
+  const wishes = await getWishesAsync();
 
   return (
     <main className='flex min-h-screen flex-col gap-3 p-24'>
@@ -35,34 +35,33 @@ export default async function Ideas() {
             <CardTitle>Create a new idea</CardTitle>
           </CardHeader>
           <CardContent>
-            <CreateIdeaForm />
+            <CreateWishForm />
           </CardContent>
         </Card>
-        {gifts.map((g, i) => (
-          <Card key={g.id} className='relative w-64'>
+        {wishes.map((w, i) => (
+          <Card key={w.id} className='relative w-64'>
             <CardHeader>
               <div className='relative h-[207px] w-[207px] bg-gray-400'>
-                {!!g.imageUrl && (
+                {!!w.imageUrl && (
                   <Image
                     className='rounded-sm object-cover'
-                    src={g.imageUrl}
-                    alt={`${g.description} preview`}
+                    src={w.imageUrl}
+                    alt={`${w.description} preview`}
                     placeholder='blur'
-                    blurDataURL={g.imageUrl}
+                    blurDataURL={w.imageUrl}
                     fill
                   />
                 )}
               </div>
             </CardHeader>
             <CardContent>
-              <p className='truncate' title={g.description}>
-                {i + 1}. {g.description}
+              <p className='truncate' title={w.description}>
+                {i + 1}. {w.description}
               </p>
-              <p>Created: {g.createdAt.toLocaleDateString()}</p>
-              <DeleteIdeaForm
-                key={g.id}
-                ideaId={g.id}
-                idea={g.description}
+              <p>Created: {w.createdAt.toLocaleDateString()}</p>
+              <DeleteWishForm
+                key={w.id}
+                wish={w}
                 className='absolute right-4 top-4'
               />
             </CardContent>

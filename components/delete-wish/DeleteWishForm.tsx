@@ -3,19 +3,14 @@ import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { DeleteIdeaFormValues, deleteIdeaSchema } from './schemas';
+import { DeleteWishFormValues, deleteWishSchema } from './schemas';
 import { Button } from '@/components/ui/button';
 import { Trash2Icon } from 'lucide-react';
 import { useFormState, useFormStatus } from 'react-dom';
-import { deleteIdea } from './actions';
+import { deleteWish } from './actions';
 import { useToast } from '@/components/ui/use-toast';
 import { Input } from '@/components/ui/input';
-import { Gift } from '@prisma/client';
-import { ActionResult } from '@/lib/types';
-
-const initialState: ActionResult = {
-  type: 'none',
-};
+import { Wish } from '@prisma/client';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -27,34 +22,29 @@ function SubmitButton() {
   );
 }
 
-interface DeleteIdeaFormProps {
+interface DeletedWishFormProps {
   className: string;
-  ideaId: Gift['id'];
-  idea: Gift['description'];
+  wish: Wish;
 }
 
-export function DeleteIdeaForm({
+export function DeleteWishForm({
   className,
-  ideaId,
-  idea,
-}: DeleteIdeaFormProps) {
+  wish: { id: wishId, description: wish },
+}: DeletedWishFormProps) {
   const { toast } = useToast();
 
-  const form = useForm<DeleteIdeaFormValues>({
-    resolver: zodResolver(deleteIdeaSchema),
+  const form = useForm<DeleteWishFormValues>({
+    resolver: zodResolver(deleteWishSchema),
     defaultValues: {
-      id: ideaId,
-      idea,
+      id: wishId,
+      wish,
     },
   });
 
-  const [state, formAction] = useFormState<ActionResult, FormData>(
-    deleteIdea,
-    initialState,
-  );
+  const [state, formAction] = useFormState(deleteWish, undefined);
 
   useEffect(() => {
-    if (state.type !== 'none') {
+    if (state && state.type !== 'none') {
       toast({
         title: state.message,
         variant: state.type === 'failure' ? 'destructive' : 'default',
@@ -76,7 +66,7 @@ export function DeleteIdeaForm({
           )}
         />
         <FormField
-          name='idea'
+          name='dwish'
           render={({ field }) => (
             <FormItem>
               <FormControl>

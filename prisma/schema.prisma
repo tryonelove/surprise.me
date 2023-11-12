@@ -10,9 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Gift {
+model Wish {
   id          String   @id @default(uuid())
   description String
   createdAt   DateTime @default(now())
   imageUrl    String?
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  password  String
 }
